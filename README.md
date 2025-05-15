@@ -1,41 +1,53 @@
-# rclone-backups
-Script para descargar y empaquetar archivos de la nube
+### README.md
 
-En el script, modificar estas variables:
+## Descripción del Script
 
-# Variables de configuración
-LOG_FILE="ruta/al/log"  # Archivo de log
-DESTINATION="/ruta/a/carpeta/local/"   # Carpeta de destino
+Este script de Bash está diseñado para sincronizar datos desde unidades compartidas de Google Drive a un directorio local específico. Utiliza la herramienta `rclone` para realizar la sincronización y registra el progreso y los resultados en un archivo de log.
 
-Para completar estas variables, es neceario ya tener configurado el remote de rclone (Ver documentación oficial para esto)
+## Requisitos
 
-El comando a usar es:
+### Para Google Drive
 
-rclone backend drives init-test:
+1. **Crear un Proyecto en Google Cloud Platform (GCP)**:
+   - Accede a [Google Cloud Console](https://console.cloud.google.com/).
+   - Crea un nuevo proyecto.
+   - Habilita la API de Google Drive para tu proyecto.
 
-Devuelve estos datos, usar ID y name según corresponda:
+2. **Configurar `rclone`**:
+   - La configuración inicial para Google Drive implica obtener un token que necesitas hacer en tu navegador. `rclone config` te guiará a través de este proceso.
+   - Para más detalles sobre cómo configurar `rclone` para Google Drive, consulta la [documentación oficial de rclone](https://rclone.org/drive/).
 
-[
-	{
-		"id": "0AIGBJMf6M_XTUk9PVA",
-		"kind": "drive#teamDrive",
-		"name": "INIT"
-	},
-	{
-		"id": "0AHBlLtOeW2ftUk9PVA",
-		"kind": "drive#teamDrive",
-		"name": "Soporte"
-	},
-	{
-		"id": "0ANMk3V85rrRkUk9PVA",
-		"kind": "drive#teamDrive",
-		"name": "SysAdmin"
-	}
-]
+### Para OneDrive
 
+- **Requisitos**: Si deseas sincronizar con OneDrive, necesitarás configurar `rclone` para acceder a tu cuenta de OneDrive. Esto también se puede hacer a través de `rclone config`, donde deberás seleccionar OneDrive como tipo de almacenamiento y seguir las instrucciones para autenticarte. Para más información, consulta la [documentación oficial de rclone para OneDrive](https://rclone.org/onedrive/).
 
-# Array de Shared Drives con nombres reconocibles
-SHARED_DRIVES=(
-  "Soporte:0AHBlLtOeW2ftUk9PVA"
-  "Sysadmin:0ANMk3V85rrRkUk9PVA"
-)
+## Variables de Configuración
+
+- `LOG_FILE`: Ruta del archivo donde se registrarán los mensajes de log. Por defecto, está configurado en `/var/log/rclone_log.txt`.
+- `DESTINATION`: Ruta del directorio local donde se sincronizarán los datos. Configurar la ruta deseada.
+- `REMOTE`: El nombre del remoto de `rclone` que se utilizará para la sincronización. Cambiar por el nombre del remote configurado previamente en `rclone`.
+
+## Unidades Compartidas
+
+El script utiliza un array llamado `SHARED_DRIVES` que debe contener los nombres y IDs de las unidades compartidas en el formato `nombre-de-drive:ID-del-drive`. Puedes agregar o modificar las unidades compartidas según sea necesario.
+
+## Funciones
+
+- `log_message`: Registra mensajes en el archivo de log con una marca de tiempo y el tipo de mensaje (INFO o ERROR).
+- `sync_drive`: Sincroniza una unidad compartida específica utilizando `rclone`. Crea el directorio de destino si no existe y registra el estado de la sincronización.
+
+## Ejecución
+
+Para ejecutar el script, asegúrate de que tienes los permisos necesarios y que `rclone` está correctamente configurado. Luego, puedes ejecutar el script con el siguiente comando:
+
+    ./nombre_del_script.sh
+
+Asegúrate de reemplazar `nombre_del_script.sh` con el nombre real del archivo del script.
+
+## Ejemplo de Uso
+
+1. Modifica el array `SHARED_DRIVES` para incluir las unidades que deseas sincronizar.
+2. Ajusta las variables `LOG_FILE`, `DESTINATION` y `REMOTE` si es necesario.
+3. Ejecuta el script y verifica el archivo de log para ver el progreso y los resultados de la sincronización.
+
+---

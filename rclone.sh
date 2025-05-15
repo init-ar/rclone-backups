@@ -1,8 +1,9 @@
 #!/bin/bash
 
 # Variables de configuración
-LOG_FILE="/home/juan/sync_log.txt"  # Archivo de log
-DESTINATION="/home/juan/init-test/"   # Carpeta de destino
+LOG_FILE="/var/log/rclone_log.txt"  # Archivo de log
+DESTINATION="/path/to/destination"   # Carpeta de destino
+REMOTE="remote-name"                     # Remote de rclone (sin los dos puntos)
 
 # Array de Shared Drives con nombres reconocibles
 SHARED_DRIVES=(
@@ -33,7 +34,7 @@ sync_drive() {
     log_message "INFO" "Iniciando sincronización para el ID de Drive: $drive_name ($drive_id)"
     
     # Ejecutar el comando rclone
-    rclone sync "init-test:" --drive-team-drive "$drive_id" "$drive_destination" --progress --transfers=4 --checkers=8 --drive-acknowledge-abuse
+    rclone sync "$REMOTE:" --drive-team-drive "$drive_id" "$drive_destination" --progress --transfers=4 --checkers=8 --drive-acknowledge-abuse
     
     # Verificar el estado de la última ejecución
     if [ $? -eq 0 ]; then
