@@ -25,7 +25,7 @@ Este script de Bash está diseñado para sincronizar datos desde unidades compar
 
 - `LOG_FILE`: Ruta del archivo donde se registrarán los mensajes de log. Por defecto, está configurado en `/var/log/rclone_log.txt`.
 - `DESTINATION`: Ruta del directorio local donde se sincronizarán los datos. Configurar la ruta deseada.
-- `REMOTE`: El nombre del remoto de `rclone` que se utilizará para la sincronización.
+- `REMOTE`: El nombre del remoto de `rclone` que se utilizará para la sincronización. Cambiar por el nombre del remote configurado previamente en `rclone`.
 
 ## Unidades Compartidas
 
