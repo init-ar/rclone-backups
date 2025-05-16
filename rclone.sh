@@ -38,9 +38,9 @@ sync_drive() {
     
     # Verificar el estado de la última ejecución
     if [ $? -eq 0 ]; then
-        log_message "INFO" "Sincronización completada exitosamente para el ID: $drive_name ($drive_id)"
+        log_message "info" "Sincronización completada exitosamente para el ID: $drive_name ($drive_id)"
     else
-        log_message "ERROR" "Error durante la sincronización para el ID: $drive_name ($drive_id)"
+        log_message "error" "Error durante la sincronización para el ID: $drive_name ($drive_id)"
     fi
 }
 
