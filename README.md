@@ -17,15 +17,17 @@ Este script de Bash está diseñado para sincronizar datos desde unidades compar
    - La configuración inicial para Google Drive implica obtener un token que necesitas hacer en tu navegador. `rclone config` te guiará a través de este proceso.
    - Para más detalles sobre cómo configurar `rclone` para Google Drive, consulta la [documentación oficial de rclone](https://rclone.org/drive/).
 
-### Para OneDrive
+### Para OneDrive --> FALTA TESTEO
 
 - **Requisitos**: Si deseas sincronizar con OneDrive, necesitarás configurar `rclone` para acceder a tu cuenta de OneDrive. Esto también se puede hacer a través de `rclone config`, donde deberás seleccionar OneDrive como tipo de almacenamiento y seguir las instrucciones para autenticarte. Para más información, consulta la [documentación oficial de rclone para OneDrive](https://rclone.org/onedrive/).
 
 ## Variables de Configuración
 
+Crear un archivo "rclone.config", usar el archivo de ejemplo para modificar las variables.
 - `LOG_FILE`: Ruta del archivo donde se registrarán los mensajes de log. Por defecto, está configurado en `/var/log/rclone_log.txt`.
-- `DESTINATION`: Ruta del directorio local donde se sincronizarán los datos. Configurar la ruta deseada.
-- `REMOTE`: El nombre del remoto de `rclone` que se utilizará para la sincronización. Cambiar por el nombre del remote configurado previamente en `rclone`.
+- `SOURCE`: Origen de los datos, se puede poner tanto remote (Poner ":" al final del nombre del remoto) como una ruta local a sincronizar.
+- `DESTINATION`: Destino de los archivos (Cuidado con este parámetro, ya que puede haber pérdida de datos, los archivos que no existen en el origen se borran en el destino, recomendado hacer primero pruebas con el parámetro "DRY_RUN" en "TRUE")
+- `DRY_RUN`: Recomendado probar primero con el parámetro en TRUE, para chequear cuáles son los cambios que se harían antes de aplicar.
 
 ## Unidades Compartidas
 

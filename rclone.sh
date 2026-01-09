@@ -1,15 +1,7 @@
 #!/bin/bash
 
-# Variables de configuración
-LOG_FILE="/var/log/rclone_log.txt"  # Archivo de log
-DESTINATION="/path/to/destination"   # Carpeta de destino
-REMOTE="remote-name"                     # Remote de rclone (sin los dos puntos)
-
-# Array de Shared Drives con nombres reconocibles
-SHARED_DRIVES=(
-  "name-de-drive:ID-del-drive"
-  "name-de-drive2:ID-del-drive2"
-)
+# Cargar configuración desde archivo externo
+source "$(dirname "$0")/rclone.config" || exit 1
 
 # Función para registrar mensajes en el log
 log_message() {
@@ -23,18 +15,21 @@ sync_drive() {
     local drive_info="$1"
     local drive_name="${drive_info%%:*}"  # Extraer el nombre del drive
     local drive_id="${drive_info##*:}"      # Extraer el ID del drive
-    local drive_destination="$DESTINATION$drive_name/"  # Carpeta de destino específica para el drive
-
-    # Verificar si la carpeta de destino existe, si no, crearla
-    if [ ! -d "$drive_destination" ]; then
-        mkdir -p "$drive_destination"
-        log_message "INFO" "Carpeta creada: $drive_destination"
-    fi
-
+    
     log_message "INFO" "Iniciando sincronización para el ID de Drive: $drive_name ($drive_id)"
+    log_message "INFO" "Desde: $SOURCE"
+    log_message "INFO" "Hacia: $DESTINATION"
+    
+    # Construir el comando base
+    local rclone_cmd="rclone sync \"$SOURCE\" \"$DESTINATION\" --drive-team-drive \"$drive_id\" --progress --transfers=4 --checkers=8 --drive-acknowledge-abuse"
+    
+    # Añadir --dry-run si DRY_RUN es TRUE
+    if [ "$DRY_RUN" = "TRUE" ]; then
+        rclone_cmd="$rclone_cmd --dry-run"
+    fi
     
     # Ejecutar el comando rclone
-    rclone sync "$REMOTE:" --drive-team-drive "$drive_id" "$drive_destination" --progress --transfers=4 --checkers=8 --drive-acknowledge-abuse
+    eval $rclone_cmd
     
     # Verificar el estado de la última ejecución
     if [ $? -eq 0 ]; then

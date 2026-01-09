@@ -1,0 +1,11 @@
+# Variables de configuración
+LOG_FILE="/var/log/rclone_log.txt"  # Archivo de log
+SOURCE="remote-name:"                # Origen (remote: o ruta local)
+DESTINATION="/path/to/destination"   # Destino (remote: o ruta local)
+DRY_RUN="TRUE"                       # TRUE o FALSE para realizar dry-run
+
+# Array de Shared Drives con nombres reconocibles
+SHARED_DRIVES=(
+  "name-de-drive:ID-del-drive"
+  "name-de-drive2:ID-del-drive2"
+)
