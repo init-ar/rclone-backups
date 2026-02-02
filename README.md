@@ -33,6 +33,9 @@ Crear un archivo "rclone.config", usar el archivo de ejemplo para modificar las 
 
 El script utiliza un array llamado `SHARED_DRIVES` que debe contener los nombres y IDs de las unidades compartidas en el formato `nombre-de-drive:ID-del-drive`. Puedes agregar o modificar las unidades compartidas según sea necesario.
 
+Para obtener este listado, asegurarse de tener una versión de rclone superior a 1.57 y usar este comando:
+rclone backend drives "nombre-remote:"
+
 ## Funciones
 
 - `log_message`: Registra mensajes en el archivo de log con una marca de tiempo y el tipo de mensaje (INFO o ERROR).
