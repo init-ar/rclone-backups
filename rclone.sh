@@ -21,7 +21,13 @@ sync_drive() {
     log_message "INFO" "Hacia: $destination"
     
     # Construir el comando base
-    local rclone_cmd="rclone sync \"$source\" \"$destination\" --progress --transfers=4 --checkers=8 --drive-acknowledge-abuse"
+    local rclone_cmd="rclone sync \
+    "$source" \
+    "$destination" \
+    --progress \
+    --transfers=4 \
+    --checkers=8 \
+    $RCLONE_EXTRA_ARGS"
     
     # Añadir --dry-run si DRY_RUN es TRUE
     if [ "$DRY_RUN" = "TRUE" ]; then

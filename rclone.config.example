@@ -1,6 +1,7 @@
 # Variables de configuración
 LOG_FILE="/var/log/rclone_log.txt"  # Archivo de log
 DRY_RUN="TRUE"                       # TRUE o FALSE para realizar dry-run
+RCLONE_EXTRA_ARGS=""
 
 # Array de tareas de sincronización
 # Formato: "SOURCE|DESTINATION"
