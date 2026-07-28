@@ -1,7 +1,28 @@
 # Variables de configuración
 LOG_FILE="/var/log/rclone_log.txt"  # Archivo de log
 DRY_RUN="TRUE"                       # TRUE o FALSE para realizar dry-run
-RCLONE_EXTRA_ARGS=""
+
+# Opciones para rclone, ejemplos:
+
+# Para Google Drive:
+# --progress \
+# --transfers=4 \
+# --checkers=8 \
+# --drive-acknowledge-abuse
+
+# Para Livedrive:
+# --progress \
+# --transfers=4 \
+# --checkers=8 \
+# --retries=5 \
+# --low-level-retries=20 \
+# --timeout=5m \
+# --contimeout=30s \
+# --stats=60s \
+# --stats-one-line"
+
+RCLONE_OPTIONS="\
+"
 
 # Array de tareas de sincronización
 # Formato: "SOURCE|DESTINATION"

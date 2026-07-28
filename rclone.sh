@@ -16,18 +16,15 @@ sync_drive() {
     local source="${sync_info%%|*}"     # Extraer SOURCE
     local destination="${sync_info#*|}"  # Extraer DESTINATION
     
-    log_message "INFO" "Iniciando sincronización"
-    log_message "INFO" "Desde: $source"
-    log_message "INFO" "Hacia: $destination"
+    log_message "info" "Iniciando sincronización"
+    log_message "info" "Desde: $source"
+    log_message "info" "Hacia: $destination"
     
     # Construir el comando base
     local rclone_cmd="rclone sync \
     "$source" \
     "$destination" \
-    --progress \
-    --transfers=4 \
-    --checkers=8 \
-    $RCLONE_EXTRA_ARGS"
+    $RCLONE_OPTIONS"
     
     # Añadir --dry-run si DRY_RUN es TRUE
     if [ "$DRY_RUN" = "TRUE" ]; then
