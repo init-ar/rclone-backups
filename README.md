@@ -1,53 +1,124 @@
-### README.md
+# README.md
 
 ## Descripción del Script
 
-Este script de Bash está diseñado para sincronizar datos desde unidades compartidas de Google Drive a un directorio local específico. Utiliza la herramienta `rclone` para realizar la sincronización y registra el progreso y los resultados en un archivo de log.
+Este script de Bash está diseñado para sincronizar datos entre carpetas locales y/o remotos configurados en `rclone`. Utiliza la herramienta `rclone` para realizar la sincronización y registra el progreso y los resultados en un archivo de log.
 
 ## Requisitos
 
-### Para Google Drive
+### Configuración de `rclone`
 
-1. **Crear un Proyecto en Google Cloud Platform (GCP)**:
-   - Accede a [Google Cloud Console](https://console.cloud.google.com/).
-   - Crea un nuevo proyecto.
-   - Habilita la API de Google Drive para tu proyecto.
+Antes de utilizar el script, es necesario tener instalado y configurado `rclone`.
 
-2. **Configurar `rclone`**:
-   - La configuración inicial para Google Drive implica obtener un token que necesitas hacer en tu navegador. `rclone config` te guiará a través de este proceso.
-   - Para más detalles sobre cómo configurar `rclone` para Google Drive, consulta la [documentación oficial de rclone](https://rclone.org/drive/).
+Cada proveedor de almacenamiento tiene su propio procedimiento de configuración mediante:
 
-### Para OneDrive
+```bash
+rclone config
+```
 
-- **Requisitos**: Si deseas sincronizar con OneDrive, necesitarás configurar `rclone` para acceder a tu cuenta de OneDrive. Esto también se puede hacer a través de `rclone config`, donde deberás seleccionar OneDrive como tipo de almacenamiento y seguir las instrucciones para autenticarte. Para más información, consulta la [documentación oficial de rclone para OneDrive](https://rclone.org/onedrive/).
+La documentación oficial de cada backend puede consultarse en:
+
+https://rclone.org/
+
+### Google Drive
+
+Para utilizar Google Drive:
+
+1. Crear un proyecto en Google Cloud Platform (GCP).
+2. Habilitar la API de Google Drive.
+3. Configurar el remote mediante `rclone config`.
+
+Más información:
+
+https://rclone.org/drive/
+
+### OneDrive
+
+Para utilizar OneDrive, configurar el remote mediante `rclone config` siguiendo la documentación oficial:
+
+https://rclone.org/onedrive/
+
+### Otros proveedores
+
+El script puede utilizar cualquier backend soportado por `rclone` (WebDAV, S3, Dropbox, Proton Drive, SMB, almacenamiento local, etc.), siempre que el remote haya sido configurado previamente mediante `rclone config`.
 
 ## Variables de Configuración
 
-- `LOG_FILE`: Ruta del archivo donde se registrarán los mensajes de log. Por defecto, está configurado en `/var/log/rclone_log.txt`.
-- `DESTINATION`: Ruta del directorio local donde se sincronizarán los datos. Configurar la ruta deseada.
-- `REMOTE`: El nombre del remoto de `rclone` que se utilizará para la sincronización. Cambiar por el nombre del remote configurado previamente en `rclone`.
+Crear un archivo `rclone.config` utilizando como base `rclone.config.example`.
 
-## Unidades Compartidas
+Las variables disponibles son:
 
-El script utiliza un array llamado `SHARED_DRIVES` que debe contener los nombres y IDs de las unidades compartidas en el formato `nombre-de-drive:ID-del-drive`. Puedes agregar o modificar las unidades compartidas según sea necesario.
+- **LOG_FILE**: Ruta del archivo donde se registrarán los mensajes del script.
+- **DRY_RUN**: Se recomienda mantener el valor `TRUE` durante las pruebas para verificar las acciones que realizará `rclone` sin efectuar cambios.
+- **RCLONE_OPTIONS**: Permite definir las opciones que se pasarán al comando `rclone sync`. Estas opciones dependen del proveedor utilizado y de los requerimientos de la sincronización.
+
+Ejemplo para Google Drive:
+
+```text
+RCLONE_OPTIONS="\
+--progress \
+--transfers=4 \
+--checkers=8 \
+--drive-acknowledge-abuse"
+```
+
+Ejemplo para LiveDrive:
+
+```text
+RCLONE_OPTIONS="\
+--progress \
+--transfers=4 \
+--checkers=8 \
+--retries=5 \
+--low-level-retries=20 \
+--timeout=5m \
+--contimeout=30s \
+--stats=60s \
+--stats-one-line"
+```
+
+- **SHARED_DRIVES**: Array que define las tareas de sincronización.
+
+Formato:
+
+```text
+"ORIGEN|DESTINO"
+```
+
+Ejemplos:
+
+```text
+"remote1:|/backup/local"
+"/datos|onedrive:Backup"
+"gdrive:Empresa|livedrive:Empresa"
+```
+
+El origen y el destino pueden ser indistintamente una carpeta local o un remote configurado en `rclone`.
+
+> **Importante:** `rclone sync` elimina del destino los archivos que no existen en el origen. Se recomienda realizar las primeras ejecuciones con `DRY_RUN="TRUE"`.
+
+## Unidades Compartidas de Google Drive
+
+Si se utilizan Unidades Compartidas (Shared Drives), cada una debe configurarse como un remote independiente de tipo `team-drive` mediante `rclone config`.
 
 ## Funciones
 
-- `log_message`: Registra mensajes en el archivo de log con una marca de tiempo y el tipo de mensaje (INFO o ERROR).
-- `sync_drive`: Sincroniza una unidad compartida específica utilizando `rclone`. Crea el directorio de destino si no existe y registra el estado de la sincronización.
+- **log_message**: Registra mensajes en el archivo de log con fecha, hora y tipo de mensaje.
+- **sync_drive**: Ejecuta una tarea de sincronización utilizando `rclone sync`.
 
 ## Ejecución
 
-Para ejecutar el script, asegúrate de que tienes los permisos necesarios y que `rclone` está correctamente configurado. Luego, puedes ejecutar el script con el siguiente comando:
+Una vez configurado `rclone` y creado el archivo `rclone.config`, ejecutar:
 
-    ./nombre_del_script.sh
-
-Asegúrate de reemplazar `nombre_del_script.sh` con el nombre real del archivo del script.
+```bash
+./rclone.sh
+```
 
 ## Ejemplo de Uso
 
-1. Modifica el array `SHARED_DRIVES` para incluir las unidades que deseas sincronizar.
-2. Ajusta las variables `LOG_FILE`, `DESTINATION` y `REMOTE` si es necesario.
-3. Ejecuta el script y verifica el archivo de log para ver el progreso y los resultados de la sincronización.
-
----
+1. Crear el archivo `rclone.config` a partir de `rclone.config.example`.
+2. Configurar `RCLONE_OPTIONS` según el proveedor utilizado.
+3. Configurar el array `SHARED_DRIVES`.
+4. Mantener `DRY_RUN="TRUE"` durante las pruebas.
+5. Ejecutar el script.
+6. Revisar el archivo de log para verificar el resultado de la sincronización.
